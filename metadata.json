@@ -1,0 +1,25 @@
+
+{
+  "name": "Enquête Pêcheurs Sanaga",
+  "description": "Une application mobile-first pour le recensement et l'enquête statistique des pêcheurs du fleuve Sanaga (Chrysichthys). Fonctionne entièrement hors-ligne avec export CSV.",
+  "short_name": "SanagaSurvey",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://picsum.photos/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

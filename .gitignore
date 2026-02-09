@@ -1,0 +1,34 @@
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Package manager caches
+.npm/
+.pnpm-store/
+
+# Bundlers / frameworks
+.vite/
+.next/
+.nuxt/
+.svelte-kit/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+.env
+.env.*

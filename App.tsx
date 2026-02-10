@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { SurveyEntry } from './types';
 
@@ -54,14 +53,12 @@ const initialFormState: SurveyEntry = {
   nom_prenom: '',
   telephone: '',
   num_enregistrement: '',
-  tranche_age: '',
   age: '',
   sexe: '',
   situation_matrimoniale: '',
   enfants_charge: '',
   niveau_etude: '',
   religion: '',
-  region_origine: '',
   activite_principale: '',
   activite_principale_autre: '',
   activite_secondaire: '',
@@ -72,8 +69,6 @@ const initialFormState: SurveyEntry = {
   distinguer_machoiron: '',
   nb_especes_pechees: '',
   distinction_methode: '',
-  nom_local_existe: '',
-  noms_locaux: '',
   nom_maternelle_A: '',
   nom_maternelle_B: '',
   nom_maternelle_C: '',
@@ -141,6 +136,7 @@ export default function App() {
   const [currentSection, setCurrentSection] = useState(0);
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [gpsStatus, setGpsStatus] = useState<'searching' | 'fixed' | 'denied'>('searching');
+  const [isManualLocation, setIsManualLocation] = useState(false);
 
   const updateLocation = useCallback(() => {
     if ("geolocation" in navigator) {
@@ -172,8 +168,18 @@ export default function App() {
     const draft = localStorage.getItem('sanaga_draft');
     if (draft) setFormData(JSON.parse(draft));
 
-    updateLocation();
+    const manualLoc = localStorage.getItem('sanaga_manual_location');
+    const isManual = manualLoc ? JSON.parse(manualLoc) : false;
+    setIsManualLocation(isManual);
+
+    if (!isManual) {
+      updateLocation();
+    }
   }, [updateLocation]);
+
+  useEffect(() => {
+    localStorage.setItem('sanaga_manual_location', JSON.stringify(isManualLocation));
+  }, [isManualLocation]);
 
   useEffect(() => {
     localStorage.setItem('sanaga_draft', JSON.stringify(formData));
@@ -265,13 +271,6 @@ export default function App() {
           <h1 className="text-xl font-bold">ENSAHV - Enquête Sanaga</h1>
           <p className="text-xs opacity-80">Master 2 - Filière Aquaculture - Enquête Biotechnique & Socioéco</p>
         </div>
-        <button 
-          onClick={downloadCSV}
-          className="bg-white/20 hover:bg-white/30 text-white text-xs font-bold py-2 px-3 rounded-lg flex items-center gap-2 border border-white/40 backdrop-blur-sm transition-all"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          CSV ({submissions.length})
-        </button>
       </header>
 
       {/* Progress Bar */}
@@ -317,25 +316,54 @@ export default function App() {
                 <div className="mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
                   <div className="flex justify-between items-center mb-3">
                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Coordonnées GPS</h4>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                      gpsStatus === 'fixed' ? 'bg-green-100 text-green-700' : 
-                      gpsStatus === 'searching' ? 'bg-yellow-100 text-yellow-700 animate-pulse' : 
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {gpsStatus === 'fixed' ? 'Signal OK' : gpsStatus === 'searching' ? 'Recherche...' : 'Erreur GPS'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-semibold text-slate-600 flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={isManualLocation} 
+                          onChange={(e) => setIsManualLocation(e.target.checked)} 
+                          className="mr-1 w-3 h-3"
+                        />
+                        Saisie manuelle
+                      </label>
+                      {!isManualLocation && (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                          gpsStatus === 'fixed' ? 'bg-green-100 text-green-700' : 
+                          gpsStatus === 'searching' ? 'bg-yellow-100 text-yellow-700 animate-pulse' : 
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {gpsStatus === 'fixed' ? 'Signal OK' : gpsStatus === 'searching' ? 'Recherche...' : 'Erreur GPS'}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Latitude" name="latitude" value={formData.latitude} readOnly placeholder="Attente signal..." />
-                    <InputField label="Longitude" name="longitude" value={formData.longitude} readOnly placeholder="Attente signal..." />
+                    <InputField 
+                      label="Latitude" 
+                      name="latitude" 
+                      value={formData.latitude} 
+                      readOnly={!isManualLocation} 
+                      onChange={isManualLocation ? handleInputChange : undefined}
+                      placeholder={isManualLocation ? "Ex: 4.051056" : "Attente signal..."} 
+                    />
+                    <InputField 
+                      label="Longitude" 
+                      name="longitude" 
+                      value={formData.longitude} 
+                      readOnly={!isManualLocation} 
+                      onChange={isManualLocation ? handleInputChange : undefined}
+                      placeholder={isManualLocation ? "Ex: 9.7678687" : "Attente signal..."} 
+                    />
                   </div>
-                  <button 
-                    type="button" 
-                    onClick={updateLocation}
-                    className="w-full text-xs text-blue-600 font-semibold py-1 hover:underline"
-                  >
-                    Actualiser la position
-                  </button>
+                  {!isManualLocation && (
+                    <button 
+                      type="button" 
+                      onClick={updateLocation}
+                      className="w-full text-xs text-blue-600 font-semibold py-1 hover:underline"
+                    >
+                      Actualiser la position
+                    </button>
+                  )}
                 </div>
 
                 <InputField label="Date d'enquête" name="date_enquete" type="date" placeholder="jj/mm/aaaa" value={formData.date_enquete} onChange={handleInputChange} />

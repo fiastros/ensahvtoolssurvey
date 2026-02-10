@@ -3,16 +3,27 @@
 > A professional web-based survey application for biotechnical and socio-economic data collection in fisheries research.
 
 ## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Development](#development)
-- [Deployment](#deployment)
-- [Data Export](#data-export)
-- [Citation](#citation)
+- [ENSAHV M2 Survey Application](#ensahv-m2-survey-application)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Features](#features)
+  - [Technology Stack](#technology-stack)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+    - [Option 1: Using npm (Recommended)](#option-1-using-npm-recommended)
+  - [Usage](#usage)
+    - [Running the Development Server](#running-the-development-server)
+    - [Building for Production](#building-for-production)
+  - [Deployment](#deployment)
+    - [Deploying to Netlify (Recommended)](#deploying-to-netlify-recommended)
+    - [Other Deployment Options](#other-deployment-options)
+  - [Data Export](#data-export)
+    - [CSV Export Features](#csv-export-features)
+    - [Data Management](#data-management)
+  - [Citation](#citation)
+  - [Author](#author)
+  - [License](#license)
+  - [Support](#support)
 
 
 ## Overview
@@ -78,9 +89,6 @@ npm --version
    npm install
    ```
 
-### Option 2: Using Docker
-
-If you prefer to run the application in a Docker container, you can set up your own Dockerfile. The application requires Node.js and npm to build and run.
 
 ## Usage
 
@@ -110,20 +118,9 @@ This command:
 
 The build process generates static files ready for deployment.
 
-### Running the Production Build Locally
-
-To test the production build locally:
-
-```bash
-npm run preview
-```
 
 
-### Key Features Implementation
 
-- **Local Storage** - Survey data is saved to browser's localStorage as `sanaga_submissions` and drafts as `sanaga_draft`
-- **GPS Location** - Uses the browser's Geolocation API for automatic coordinate capture
-- **CSV Export** - Exports data with UTF-8 BOM (Byte Order Mark) for proper character encoding in Excel
 
 ## Deployment
 
